@@ -28,7 +28,8 @@
         </ul>
       </header>
       <section>
-        <h2>supernova - use novaclient with multiple nova environments the easy way</h2>
+        <h2>
+<a name="supernova---use-novaclient-with-multiple-nova-environments-the-easy-way" class="anchor" href="#supernova---use-novaclient-with-multiple-nova-environments-the-easy-way"><span class="octicon octicon-link"></span></a>supernova - use novaclient with multiple nova environments the easy way</h2>
 
 <p>You may like <em>supernova</em> if you regularly have the following problems:</p>
 
@@ -41,39 +42,48 @@
 <li>You need to share common skeleton environment variables for <em>nova</em> with your teams</li>
 </ul><p>If any of these complaints ring true, <em>supernova</em> is for you. <em>supernova</em> manages multiple nova environments without sourcing novarc's or mucking with environment variables.</p>
 
-<p><img src="https://skitch.mhtx.net/firstworldproblems-multiplenovaenvironments-20120316-072224.jpg" alt="First world problems - nova style"></p>
-
-<h3>Installation</h3>
+<h3>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h3>
 
 <pre><code>git clone git://github.com/major/supernova.git
 cd supernova
 python setup.py install
 </code></pre>
 
-<h3>Configuration</h3>
+<h3>
+<a name="configuration" class="anchor" href="#configuration"><span class="octicon octicon-link"></span></a>Configuration</h3>
 
 <p>For <em>supernova</em> to work properly, each environment must be defined in <code>~/.supernova</code> (in your user's home directory).  The data in the file is exactly the same as the environment variables which you would normally use when running <em>nova</em>.  You can copy/paste from your novarc files directly into configuration sections within <code>~/.supernova</code>.</p>
 
-<p>Here's an example of two environments, <strong>production</strong> and <strong>development</strong>:</p>
+<p>Here's an example of how to use supernova with <a href="http://www.rackspace.com/cloud/servers/">Rackspace Cloud Servers</a> in different datacenters:</p>
 
-<pre><code>[production]
-NOVA_URL=http://production.nova.example.com:8774/v1.1/
-NOVA_VERSION=1.1
-NOVA_USERNAME = jsmith
-NOVA_API_KEY = fd62afe2-4686-469f-9849-ceaa792c55a6
-NOVA_PROJECT_ID = nova-production
+<pre><code>[iad]
+OS_AUTH_URL=https://identity.api.rackspacecloud.com/v2.0/
+NOVA_RAX_AUTH=1
+OS_AUTH_SYSTEM=rackspace
+OS_REGION_NAME=IAD
+OS_TENANT_NAME=your_rackspace_cloud_username
+OS_USERNAME=your_rackspace_cloud_username
+OS_PASSWORD=your_rackspace_api_key
+OS_PROJECT_ID=your_rackspace_cloud_account_number
 
-[development]
-NOVA_URL=http://dev.nova.example.com:8774/v1.1/
-NOVA_VERSION=1.1
-NOVA_USERNAME = jsmith
-NOVA_API_KEY = 40318069-6069-4d9f-836d-a46df17fc8d1
-NOVA_PROJECT_ID = nova-production
+[ord]
+OS_AUTH_URL=https://identity.api.rackspacecloud.com/v2.0/
+NOVA_RAX_AUTH=1
+OS_AUTH_SYSTEM=rackspace
+OS_REGION_NAME=ORD
+OS_TENANT_NAME=your_rackspace_cloud_username
+OS_USERNAME=your_rackspace_cloud_username
+OS_PASSWORD=your_rackspace_api_key
+OS_PROJECT_ID=your_rackspace_cloud_account_number
 </code></pre>
 
-<p>When you use <em>supernova</em>, you'll refer to these environments as <strong>production</strong> and <strong>development</strong>.  Every environment is specified by its configuration header name.</p>
+<p>When you use <em>supernova</em>, you'll refer to these environments as <strong>iad</strong> and <strong>ord</strong>.  Every environment is specified by its configuration header name.  See the <em>Usage</em> section below for some examples.</p>
 
-<h3>Usage</h3>
+<p><strong>Don't know your Rackspace Cloud account number?</strong> Just log into the <a href="https://mycloud.rackspace.com/">control panel</a> and look for the number next to your username.  You should see it in the top dark grey bar all the way on the right side.</p>
+
+<h3>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h3>
 
 <pre><code>supernova [--debug] [--list] [environment] [novaclient arguments...]
 
@@ -83,81 +93,86 @@ Options:
 -l, --list   list all configured environments
 </code></pre>
 
-<h5>Passing commands to <em>nova</em>
+<h5>
+<a name="passing-commands-to-nova" class="anchor" href="#passing-commands-to-nova"><span class="octicon octicon-link"></span></a>Passing commands to <em>nova</em>
 </h5>
 
-<p>For example, if you wanted to list all instances within the <strong>production</strong> environment:</p>
+<p>For example, if you wanted to list all instances within the <strong>iad</strong> environment:</p>
 
-<pre><code>supernova production list
+<pre><code>supernova iad list
 </code></pre>
 
-<p>Show a particular instance's data in the preprod environment:</p>
+<p>Show a particular instance's data in the <strong>ord</strong> environment:</p>
 
-<pre><code>supernova preprod show 3edb6dac-5a75-486a-be1b-3b15fd5b4ab0a
+<pre><code>supernova ord show 3edb6dac-5a75-486a-be1b-3b15fd5b4ab0a
 </code></pre>
 
 <p>The first argument is generally the environment argument and it is expected to be a single word without spaces. Any text after the environment argument is passed directly to <em>nova</em>.</p>
 
-<h5>Debug override</h5>
+<h5>
+<a name="debug-override" class="anchor" href="#debug-override"><span class="octicon octicon-link"></span></a>Debug override</h5>
 
-<p>You may optionally pass <code>--debug</code> as the first argument (before the environment argument) to inject the <code>NOVACLIENT_DEBUG=1</code> option into the process environment to see additional debug information about the requests being made to the API:</p>
+<p>You may optionally pass <code>--debug</code> as the first argument (before the environment argument) to see additional debug information about the requests being made to the API:</p>
 
-<pre><code>supernova --debug production list
+<pre><code>supernova --debug iad list
 </code></pre>
 
 <p>As before, any text after the environment argument is passed directly to <em>nova</em>.</p>
 
-<h5>Listing your configured environments</h5>
+<h5>
+<a name="listing-your-configured-environments" class="anchor" href="#listing-your-configured-environments"><span class="octicon octicon-link"></span></a>Listing your configured environments</h5>
 
 <p>You can list all of your configured environments by using the <code>--list</code> argument.</p>
 
-<h3>Working with keyrings</h3>
+<h3>
+<a name="working-with-keyrings" class="anchor" href="#working-with-keyrings"><span class="octicon octicon-link"></span></a>Working with keyrings</h3>
 
 <p>Due to security policies at certain companies or due to general paranoia, some users may not want API keys or passwords stored in a plaintext <em>supernova</em> configuration file.  Luckily, support is now available (via the <a href="http://pypi.python.org/pypi/keyring">keyring</a> module) for storing any configuration value within your operating system's keychain.  This has been tested on the following platforms:</p>
 
 <ul>
 <li>Mac: Keychain Access.app</li>
-<li>Linux: gnome-keyring, kwallet</li>
+<li>Linux: gnome-keyring, kwallet (keyring will determine the backend to use based on the system type and configuration. Make sure if you're using linux without Gnome/KDE that you have pycrypto and simplejson/json installed so CryptedFileKeyring is supported or you end up with UncryptedFileKeyring and your keyring won't be encrypted)</li>
 </ul><p>To get started, you'll need to choose an environment and a configuration option.  Here's an example of some data you might not want to keep in plain text:</p>
 
-<pre><code>supernova-keyring --set production NOVA_API_KEY
+<pre><code>supernova-keyring --set iad OS_PASSWORD
 </code></pre>
 
 <p><strong>TIP</strong>: If you need to use the same data for multiple environments, you can use a global credential item very easily:</p>
 
-<pre><code>supernova-keyring --set global MyCompanyLDAPPassword
+<pre><code>supernova-keyring --set global MyCompanySSO
 </code></pre>
 
 <p>Once it's stored, you can test a retrieval:</p>
 
 <pre><code># Normal, per-environment storage
-supernova-keyring --get production NOVA_API_KEY
+supernova-keyring --get production OS_PASSWORD
 
 # Global storage
-supernova-keyring --get global MyCompanyLDAPPassword
+supernova-keyring --get global MyCompanySSO
 </code></pre>
 
 <p>You'll need to confirm that you want the data from your keychain displayed in plain text (to hopefully thwart shoulder surfers).</p>
 
 <p>Once you've stored your sensitive data, simply adjust your <em>supernova</em> configuration file:</p>
 
-<pre><code>#NOVA_API_KEY = really_sensitive_api_key_here
+<pre><code>#OS_PASSWORD = really_sensitive_api_key_here
 
 # If using storage per environment
-NOVA_API_KEY = USE_KEYRING
+OS_PASSWORD = USE_KEYRING
 
 # If using global storage
-NOVA_API_KEY = USE_KEYRING['MyCompanyLDAPPassword']
+OS_PASSWORD = USE_KEYRING['MyCompanySSO']
 </code></pre>
 
-<p>When <em>supernova</em> reads your configuration file and spots a value of <code>USE_KEYRING</code>, it will look for credentials stored under <code>NOVA_API_KEY</code> for that environment automatically.  If your keyring doesn't have a corresponding credential, you'll get an exception.</p>
+<p>When <em>supernova</em> reads your configuration file and spots a value of <code>USE_KEYRING</code>, it will look for credentials stored under <code>OS_PASSWORD</code> for that environment automatically.  If your keyring doesn't have a corresponding credential, you'll get an exception.</p>
 
-<h4>A brief note about environment variables</h4>
+<h4>
+<a name="a-brief-note-about-environment-variables" class="anchor" href="#a-brief-note-about-environment-variables"><span class="octicon octicon-link"></span></a>A brief note about environment variables</h4>
 
-<p><em>supernova</em> will only replace and/or append environment variables to the already present variables for the duration of the <em>nova</em> execution. If you have <code>NOVA_USERNAME</code> set outside the script, it won't be used in the script since the script will pull data from <code>~/.supernova</code> and use it to run <em>nova</em>. In addition, any variables which are set prior to running <em>supernova</em> will be left unaltered when the script exits.</p>
+<p><em>supernova</em> will only replace and/or append environment variables to the already present variables for the duration of the <em>nova</em> execution. If you have <code>OS_USERNAME</code> set outside the script, it won't be used in the script since the script will pull data from <code>~/.supernova</code> and use it to run <em>nova</em>. In addition, any variables which are set prior to running <em>supernova</em> will be left unaltered when the script exits.</p>
       </section>
       <footer>
-        <p>This project is maintained by <a href="https://github.com/major">Major Hayden</a></p>
+        <p>This project is maintained by <a href="https://github.com/major">major</a></p>
         <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
       </footer>
     </div>
