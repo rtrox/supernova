@@ -47,15 +47,27 @@
 <h3>
 <a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h3>
 
+<p>You will need to have a specific version of the <a href="https://pypi.python.org/pypi/keyring">keyring</a> python module installed for <em>supernova</em> to work but it should be installed automatically when you install <em>supernova</em> using the instructions below.</p>
+
+<p>For generic OpenStack environments:</p>
+
 <pre><code>git clone git://github.com/major/supernova.git
 cd supernova
 python setup.py install
 </code></pre>
 
+<p>For use with Rackspace Cloud:</p>
+
+<pre><code>git clone git://github.com/major/supernova.git
+cd supernova
+python setup.py install
+pip install rackspace-novaclient
+</code></pre>
+
 <h3>
 <a name="configuration" class="anchor" href="#configuration"><span class="octicon octicon-link"></span></a>Configuration</h3>
 
-<p>For <em>supernova</em> to work properly, each environment must be defined in <code>~/.supernova</code> (in your user's home directory).  The data in the file is exactly the same as the environment variables which you would normally use when running <em>nova</em>.  You can copy/paste from your novarc files directly into configuration sections within <code>~/.supernova</code>.</p>
+<p>For <em>supernova</em> to work properly, each environment must be defined in <code>~/.supernova</code> (a file in your user's home directory).  The data in the file is exactly the same as the environment variables which you would normally use when running <em>nova</em>.  You can copy/paste from your <code>.novarc</code> files directly into configuration sections within your <code>~/.supernova</code> file.</p>
 
 <p>Here's an example of how to use supernova with <a href="http://www.rackspace.com/cloud/servers/">Rackspace Cloud Servers</a> in different datacenters:</p>
 
@@ -167,6 +179,11 @@ OS_PASSWORD = USE_KEYRING['MyCompanySSO']
 </code></pre>
 
 <p>When <em>supernova</em> reads your configuration file and spots a value of <code>USE_KEYRING</code>, it will look for credentials stored under <code>OS_PASSWORD</code> for that environment automatically.  If your keyring doesn't have a corresponding credential, you'll get an exception.</p>
+
+<h3>
+<a name="use-with-applications-other-than-nova" class="anchor" href="#use-with-applications-other-than-nova"><span class="octicon octicon-link"></span></a>Use with applications other than nova</h3>
+
+<p>You can configure other executables to work with, e.g., <code>glance</code>/<code>neutron</code>/<code>keystone</code> with the -x flag or <code>OS_EXECUTABLE</code> in your <code>.supernova</code> file.</p>
 
 <h4>
 <a name="a-brief-note-about-environment-variables" class="anchor" href="#a-brief-note-about-environment-variables"><span class="octicon octicon-link"></span></a>A brief note about environment variables</h4>
