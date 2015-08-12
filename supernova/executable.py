@@ -33,7 +33,11 @@ from . import utils
 def print_env_list(ctx, param, value):
     if not value or ctx.resilient_parsing:
         return
-    nova_creds = config.run_config()
+    # If the user specified a configuration file, let's use that
+    config_file_override = ctx.params.get('conf')
+    nova_creds = config.run_config(config_file_override=config_file_override)
+
+    # Loop through the environments in the configuration file and print them
     for nova_env in nova_creds.keys():
         envheader = '__ %s ' % click.style(nova_env, fg='green')
         click.echo(envheader.ljust(86, '_'))
@@ -63,7 +67,9 @@ command_settings = {
 @click.option('--debug', '-d', default=False, is_flag=True,
               help="Enable debugging", show_default=True)
 @click.option('--conf', '-c', default=None, is_flag=False,
-              help="Manually specify a supernova configuration file")
+              help=("Manually specify a path to a supernova configuration file"
+                    " (default: .supernova in current directory or "
+                    "~/.supernova)"))
 @click.option('--quiet', '-q', default=False, show_default=False,
               is_flag=True,
               help="Display the least amount of output possible")
